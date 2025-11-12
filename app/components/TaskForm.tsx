@@ -82,15 +82,22 @@ export default function TaskForm({ onTaskAdded, onError }: TaskFormProps) {
           </div>
           <div className="form-group">
             <label htmlFor="resource">Resource *</label>
-            <input
-              type="text"
+            <select
               id="resource"
               name="resource"
               value={formData.resource}
               onChange={handleChange}
-              placeholder="e.g., Ruchika"
               required
-            />
+            >
+              <option value="">Select Resource</option>
+              <option value="Jitendra Arora">Jitendra Arora</option>
+              <option value="Chetan Kumar">Chetan Kumar</option>
+              <option value="Prateek Dagur">Prateek Dagur</option>
+              <option value="Suneel Kumar Rajpoot">Suneel Kumar Rajpoot</option>
+              <option value="Sonu Diwakar">Sonu Diwakar</option>
+              <option value="Laxmiraj Singh">Laxmiraj Singh</option>
+              <option value="Abhinav Verma">Abhinav Verma</option>
+            </select>
           </div>
           <div className="form-group">
             <label htmlFor="status">Status *</label>
