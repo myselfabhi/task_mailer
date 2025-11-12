@@ -1,17 +1,23 @@
 {
   "name": "task-mailer",
   "version": "1.0.0",
-  "description": "Daily task entry and email reporting system with backend API",
+  "description": "Daily task entry and email reporting system with React",
   "scripts": {
-    "dev": "vercel dev",
-    "build": "echo 'No build step required'",
-    "start": "vercel dev"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
+    "next": "^14.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "@emailjs/browser": "^4.3.2"
   },
   "devDependencies": {
-    "vercel": "^34.0.0"
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "typescript": "^5.2.2"
   }
 }
-

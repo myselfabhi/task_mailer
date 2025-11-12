@@ -1,110 +1,138 @@
-# Task Mailer - Frontend Only
+# Task Mailer - React/Next.js Version
 
-A simple, frontend-only daily task entry and email reporting system. No build process required - just open the HTML file in your browser!
+A daily task entry and email reporting system built with Next.js and React. Team members can enter their daily tasks, and all tasks are shared across all users via a backend API.
 
 ## Features
 
 - **Task Entry Form**: Add tasks with Task name, Start Date, End Date, Resource, Status, and Remarks
-- **Task Management**: View all tasks in a table format matching your requirements
-- **Email Reporting**: Send formatted email reports with all tasks to recipients using EmailJS
-- **Local Storage**: Tasks are saved locally in the browser
+- **Shared Task List**: All team members see the same tasks (stored in backend)
+- **Email Reporting**: Send formatted email reports with all tasks using EmailJS
+- **Real-time Updates**: Tasks are fetched from the backend API
 - **Responsive Design**: Works on desktop and mobile devices
-- **No Build Required**: Pure HTML, CSS, and JavaScript - just open and use!
 
-## Usage
+## Tech Stack
 
-1. **Open the application**:
-   - Simply open `index.html` in your web browser
-   - Or use a local server: `python -m http.server 8000` then visit `http://localhost:8000`
+- **Next.js 14** - React framework with App Router
+- **React 18** - UI library
+- **TypeScript** - Type safety
+- **EmailJS** - Frontend email sending
+- **Vercel** - Deployment platform
 
-2. **Add Tasks**: Fill in the task form with all required fields and click "Add Task"
+## Getting Started
 
-3. **View Tasks**: All added tasks appear in the table below
+### Prerequisites
 
-4. **Delete Tasks**: Click the "Delete" button on any task row to remove it
+- Node.js 18+ 
+- npm or yarn
 
-5. **Send Email**: 
-   - Click "Send Email Report"
-   - Configure EmailJS settings (see EmailJS Setup below)
-   - Click "Send Email"
+### Installation
 
-6. **Clear All**: Use "Clear All Tasks" to remove all entries
+1. Install dependencies:
+```bash
+npm install
+```
 
-## EmailJS Setup
+2. Run the development server:
+```bash
+npm run dev
+```
 
-To enable email functionality, you need to set up EmailJS:
+3. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-1. **Create an EmailJS account** at [https://www.emailjs.com/](https://www.emailjs.com/)
+## Deployment to Vercel
 
-2. **Create an Email Service**:
-   - Go to Email Services in your EmailJS dashboard
-   - Add a new service (Gmail, Outlook, etc.)
-   - Note your Service ID
+### Quick Deploy
 
-3. **Create an Email Template**:
-   - Go to Email Templates
-   - Create a new template
-   - Use these template variables:
-     - `{{to_email}}` - Recipient email
-     - `{{from_name}}` - Sender name
-     - `{{from_email}}` - Sender email
-     - `{{subject}}` - Email subject
-     - `{{html_content}}` - HTML formatted task table
-   - Note your Template ID
+1. Push your code to GitHub
+2. Go to [Vercel](https://vercel.com)
+3. Click "New Project"
+4. Import your GitHub repository
+5. Vercel will auto-detect Next.js
+6. Click "Deploy"
 
-4. **Get your Public Key**:
-   - Go to Account > API Keys
-   - Copy your Public Key
+That's it! Your app will be deployed automatically.
 
-5. **Configure in the App**:
-   - Click "Send Email Report" button
-   - Fill in all the EmailJS configuration fields
+### Manual Deploy
 
-## File Structure
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
+```
+
+## Project Structure
 
 ```
 task_mailer/
-├── index.html      # Main HTML file
-├── styles.css      # All styles
-├── script.js       # All JavaScript functionality
-└── README.md       # This file
+├── app/
+│   ├── api/
+│   │   └── tasks/
+│   │       └── route.ts      # Backend API endpoint
+│   ├── components/
+│   │   ├── TaskForm.tsx      # Task entry form
+│   │   ├── TaskList.tsx      # Task list display
+│   │   └── EmailConfig.tsx   # Email configuration
+│   ├── globals.css           # Global styles
+│   ├── layout.tsx            # Root layout
+│   └── page.tsx              # Main page
+├── package.json
+├── next.config.js
+└── tsconfig.json
 ```
 
-## Technologies Used
+## API Endpoints
 
-- Pure HTML5
-- CSS3 (with modern features)
-- Vanilla JavaScript (ES6+)
-- EmailJS (for frontend email sending)
-- LocalStorage API (for data persistence)
+- `GET /api/tasks` - Fetch all tasks
+- `POST /api/tasks` - Add a new task
+- `DELETE /api/tasks?id={id}` - Delete a task
+- `PUT /api/tasks` - Clear all tasks (body: `{ action: 'clear' }`)
 
-## Browser Compatibility
+## Email Configuration
 
-Works in all modern browsers:
-- Chrome/Edge (latest)
-- Firefox (latest)
-- Safari (latest)
-- Opera (latest)
+The email configuration is pre-filled:
+- **Recipient**: suneel.rajpoot@npstx.com
+- **Sender Email**: abhinav.verma@npstx.com
+- **Sender Name**: abhinav
+- **Service ID**: service_dmu7wsp
+- **Template ID**: template_jkplftf
+- **Public Key**: v0sBqDfGCut4AVokn
 
-## Notes
+## Important Notes
 
-- Tasks are stored in browser localStorage
-- Each team member can use the same application independently
-- EmailJS allows sending emails directly from the frontend without a backend server
-- The email template includes a formatted HTML table with all task details
-- No server or build process required - just open and use!
+### Current Backend Storage
 
-## Troubleshooting
+The backend uses **in-memory storage**, which means:
+- ✅ Works for testing and small teams
+- ⚠️ Data is lost when the serverless function restarts
+- ⚠️ Not suitable for production with many users
 
-**Email Not Sending**: 
-- Verify all EmailJS credentials are correct
-- Check EmailJS dashboard for service status
-- Ensure the email template uses the correct variable names
-- Check browser console for error messages (F12)
+### Upgrading to a Database (Recommended)
 
-**Tasks Not Saving**:
-- Check if localStorage is enabled in your browser
-- Try clearing browser cache and reloading
+For production, upgrade to a persistent database:
+
+1. **MongoDB Atlas** (Free tier available)
+2. **Vercel Postgres** (Built-in Vercel integration)
+3. **Vercel KV** (Redis-based)
+
+Update `app/api/tasks/route.ts` to use your chosen database.
+
+## Development
+
+```bash
+# Development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
+
+# Lint
+npm run lint
+```
 
 ## License
 
