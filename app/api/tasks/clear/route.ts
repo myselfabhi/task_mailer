@@ -1,6 +1,9 @@
 // API route to clear all tasks (called by cron job at midnight)
 import { clearTasks } from '../storage';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
   try {
     // Verify it's a cron job request (optional - add auth header check if needed)

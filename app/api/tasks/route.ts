@@ -1,6 +1,9 @@
 // MongoDB storage
 import { addTask, deleteTask, clearTasks, getTasks } from './storage';
 
+// Force dynamic rendering for API routes
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const tasks = await getTasks();

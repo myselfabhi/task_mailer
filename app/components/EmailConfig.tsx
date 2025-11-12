@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import emailjs from '@emailjs/browser'
 
 interface Task {
   id: string
@@ -115,6 +114,9 @@ export default function EmailConfig({ tasks, onClose, onSuccess, onError }: Emai
   const handleConfirmSend = async () => {
     setIsSending(true)
     try {
+      // Dynamically import EmailJS only on client side
+      const emailjs = (await import('@emailjs/browser')).default;
+      
       emailjs.init(formData.emailjsPublicKey)
       const emailContent = generateEmailContent()
 
