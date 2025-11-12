@@ -1,9 +1,16 @@
-// Simple in-memory storage (for demo - replace with database in production)
-// In production, use MongoDB, PostgreSQL, or Vercel KV
-let tasksStorage: any[] = [];
+// MongoDB storage
+import { addTask, deleteTask, clearTasks, getTasks } from './storage';
 
 export async function GET() {
-  return Response.json({ success: true, tasks: tasksStorage });
+  try {
+    const tasks = await getTasks();
+    return Response.json({ success: true, tasks });
+  } catch (error: any) {
+    return Response.json(
+      { success: false, message: 'Failed to fetch tasks', error: error.message },
+      { status: 500 }
+    );
+  }
 }
 
 export async function POST(request: Request) {
@@ -29,8 +36,8 @@ export async function POST(request: Request) {
       createdAt: new Date().toISOString()
     };
 
-    tasksStorage.push(newTask);
-    return Response.json({ success: true, task: newTask }, { status: 201 });
+    const savedTask = await addTask(newTask);
+    return Response.json({ success: true, task: savedTask }, { status: 201 });
   } catch (error: any) {
     return Response.json(
       { success: false, message: 'Internal server error', error: error.message },
@@ -51,10 +58,9 @@ export async function DELETE(request: Request) {
       );
     }
 
-    const initialLength = tasksStorage.length;
-    tasksStorage = tasksStorage.filter((t: any) => t.id !== id);
+    const deleted = await deleteTask(id);
 
-    if (tasksStorage.length < initialLength) {
+    if (deleted) {
       return Response.json({ success: true, message: 'Task deleted' });
     } else {
       return Response.json(
@@ -75,7 +81,7 @@ export async function PUT(request: Request) {
     const body = await request.json();
     
     if (body.action === 'clear') {
-      tasksStorage = [];
+      await clearTasks();
       return Response.json({ success: true, message: 'All tasks cleared' });
     }
 
