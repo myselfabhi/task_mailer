@@ -1,0 +1,7 @@
+# Ignore old files that might confuse Vercel
+index.html
+script.js
+styles.css
+DEPLOYMENT.md
+RUNNING.md
+
