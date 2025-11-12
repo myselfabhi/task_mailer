@@ -21,21 +21,25 @@ interface EmailConfigProps {
 }
 
 export default function EmailConfig({ tasks, onClose, onSuccess, onError }: EmailConfigProps) {
-  const [formData, setFormData] = useState({
+  // Pre-filled email configuration values
+  const formData = {
     recipientEmail: 'suneel.rajpoot@npstx.com',
     senderEmail: 'abhinav.verma@npstx.com',
     senderName: 'abhinav',
     emailjsServiceId: 'service_dmu7wsp',
     emailjsTemplateId: 'template_jkplftf',
     emailjsPublicKey: 'v0sBqDfGCut4AVokn'
-  })
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    })
   }
+  const [isSending, setIsSending] = useState(false)
+
+  // Close modal if no tasks
+  useEffect(() => {
+    if (tasks.length === 0) {
+      onError('No tasks to send. Please add at least one task.')
+      onClose()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const generateEmailContent = () => {
     if (tasks.length === 0) {
@@ -70,7 +74,6 @@ export default function EmailConfig({ tasks, onClose, onSuccess, onError }: Emai
 
     const escapeHtml = (text: string) => {
       if (typeof window === 'undefined') {
-        // Server-side: simple escape
         return String(text)
           .replace(/&/g, '&amp;')
           .replace(/</g, '&lt;')
@@ -78,7 +81,6 @@ export default function EmailConfig({ tasks, onClose, onSuccess, onError }: Emai
           .replace(/"/g, '&quot;')
           .replace(/'/g, '&#039;')
       }
-      // Client-side: use DOM
       const div = document.createElement('div')
       div.textContent = text
       return div.innerHTML
@@ -109,20 +111,9 @@ export default function EmailConfig({ tasks, onClose, onSuccess, onError }: Emai
     return html
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
 
-    if (!formData.recipientEmail || !formData.senderEmail || !formData.senderName || 
-        !formData.emailjsServiceId || !formData.emailjsTemplateId || !formData.emailjsPublicKey) {
-      onError('Please fill in all email configuration fields.')
-      return
-    }
-
-    if (tasks.length === 0) {
-      onError('No tasks to send. Please add at least one task.')
-      return
-    }
-
+  const handleConfirmSend = async () => {
+    setIsSending(true)
     try {
       emailjs.init(formData.emailjsPublicKey)
       const emailContent = generateEmailContent()
@@ -146,95 +137,78 @@ export default function EmailConfig({ tasks, onClose, onSuccess, onError }: Emai
       onSuccess()
     } catch (error: any) {
       console.error('Email sending error:', error)
+      setIsSending(false)
       onError(`Failed to send email: ${error.text || error.message || 'Unknown error'}`)
     }
   }
 
+  const handleCancelPreview = () => {
+    onClose()
+  }
+
+  if (tasks.length === 0) {
+    return null
+  }
+
   return (
-    <div className="email-config">
-      <h3>Email Configuration</h3>
-      <form onSubmit={handleSubmit}>
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="recipientEmail">Recipient Email *</label>
-            <input
-              type="email"
-              id="recipientEmail"
-              name="recipientEmail"
-              value={formData.recipientEmail}
-              onChange={handleChange}
-              placeholder="recipient@example.com"
-              required
-            />
+    <div className="modal-overlay" onClick={handleCancelPreview}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <h3>Email Preview - Confirm Send</h3>
+        <div className="email-preview">
+          <div className="preview-header">
+            <p><strong>To:</strong> {formData.recipientEmail}</p>
+            <p><strong>From:</strong> {formData.senderName} &lt;{formData.senderEmail}&gt;</p>
+            <p><strong>Subject:</strong> Daily Task Report - {new Date().toLocaleDateString()}</p>
           </div>
-          <div className="form-group">
-            <label htmlFor="senderEmail">Sender Email *</label>
-            <input
-              type="email"
-              id="senderEmail"
-              name="senderEmail"
-              value={formData.senderEmail}
-              onChange={handleChange}
-              placeholder="sender@example.com"
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="senderName">Sender Name *</label>
-            <input
-              type="text"
-              id="senderName"
-              name="senderName"
-              value={formData.senderName}
-              onChange={handleChange}
-              placeholder="Your Name"
-              required
-            />
+          <div className="preview-body">
+            <h4>Daily Task Report</h4>
+            <table className="task-table">
+              <thead>
+                <tr>
+                  <th>Task</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Resource</th>
+                  <th>Status</th>
+                  <th>Remarks</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tasks.map((task) => (
+                  <tr key={task.id}>
+                    <td>{task.task}</td>
+                    <td>{task.startDate}</td>
+                    <td>{task.endDate}</td>
+                    <td>{task.resource}</td>
+                    <td>{task.status}</td>
+                    <td>{task.remarks}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <p><strong>Total Tasks:</strong> {tasks.length}</p>
+            <p><em>Generated on {new Date().toLocaleString()}</em></p>
           </div>
         </div>
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="emailjsServiceId">EmailJS Service ID *</label>
-            <input
-              type="text"
-              id="emailjsServiceId"
-              name="emailjsServiceId"
-              value={formData.emailjsServiceId}
-              onChange={handleChange}
-              placeholder="service_xxxxx"
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="emailjsTemplateId">EmailJS Template ID *</label>
-            <input
-              type="text"
-              id="emailjsTemplateId"
-              name="emailjsTemplateId"
-              value={formData.emailjsTemplateId}
-              onChange={handleChange}
-              placeholder="template_xxxxx"
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="emailjsPublicKey">EmailJS Public Key *</label>
-            <input
-              type="text"
-              id="emailjsPublicKey"
-              name="emailjsPublicKey"
-              value={formData.emailjsPublicKey}
-              onChange={handleChange}
-              placeholder="xxxxxxxxxxxxx"
-              required
-            />
-          </div>
+        <div className="modal-actions">
+          <button 
+            type="button" 
+            className="btn-success" 
+            onClick={handleConfirmSend}
+            disabled={isSending}
+          >
+            {isSending ? 'Sending...' : 'Yes, Send Email'}
+          </button>
+          <button 
+            type="button" 
+            className="btn-secondary" 
+            onClick={handleCancelPreview}
+            disabled={isSending}
+          >
+            No, Cancel
+          </button>
         </div>
-        <button type="submit">Send Email</button>
-        <button type="button" className="btn-secondary" onClick={onClose}>
-          Cancel
-        </button>
-      </form>
+      </div>
     </div>
   )
 }
