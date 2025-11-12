@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Task Entry</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Daily Task Entry</h1>
+
+        <div id="alert" class="alert" style="display: none;"></div>
+
+        <div class="email-config" id="emailConfig" style="display: none;">
+            <h3>Email Configuration</h3>
+            <form id="emailForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="recipientEmail">Recipient Email *</label>
+                        <input type="email" id="recipientEmail" value="suneel.rajpoot@npstx.com" placeholder="recipient@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="senderEmail">Sender Email *</label>
+                        <input type="email" id="senderEmail" value="abhinav.verma@npstx.com" placeholder="sender@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="senderName">Sender Name *</label>
+                        <input type="text" id="senderName" value="abhinav" placeholder="Your Name" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="emailjsServiceId">EmailJS Service ID *</label>
+                        <input type="text" id="emailjsServiceId" value="service_dmu7wsp" placeholder="service_xxxxx" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="emailjsTemplateId">EmailJS Template ID *</label>
+                        <input type="text" id="emailjsTemplateId" value="template_jkplftf" placeholder="template_xxxxx" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="emailjsPublicKey">EmailJS Public Key *</label>
+                        <input type="text" id="emailjsPublicKey" value="v0sBqDfGCut4AVokn" placeholder="xxxxxxxxxxxxx" required>
+                    </div>
+                </div>
+                <button type="submit">Send Email</button>
+                <button type="button" class="btn-secondary" onclick="toggleEmailConfig()">Cancel</button>
+            </form>
+        </div>
+
+        <!-- Add New Task Box -->
+        <div class="form-box">
+            <h2>Add New Task</h2>
+            <form id="taskForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="task">Task *</label>
+                        <input type="text" id="task" placeholder="e.g., OC183/OC185B" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="resource">Resource *</label>
+                        <input type="text" id="resource" placeholder="e.g., Ruchika" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Status *</label>
+                        <select id="status" required>
+                            <option value="">Select Status</option>
+                            <option value="Completed">Completed</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Pending">Pending</option>
+                            <option value="On Hold">On Hold</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="startDate">Start Date *</label>
+                        <input type="date" id="startDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">End Date *</label>
+                        <input type="date" id="endDate" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="remarks">Remarks</label>
+                    <textarea id="remarks" placeholder="e.g., OC183 Testing completed but OC185B is pending"></textarea>
+                </div>
+                <button type="submit">Add Task</button>
+            </form>
+        </div>
+
+        <!-- Task List Box -->
+        <div class="task-list-box">
+            <h2>Task List (<span id="taskCount">0</span>)</h2>
+            <div id="emptyState" class="empty-state">
+                No tasks added yet. Start by adding a task above.
+            </div>
+            
+            <table class="task-table" id="taskTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Resource</th>
+                        <th>Status</th>
+                        <th>Remarks</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="taskTableBody">
+                </tbody>
+            </table>
+
+            <div class="actions" id="actions" style="display: none;">
+                <div>
+                    <button class="btn-success" onclick="toggleEmailConfig()">Send Email Report</button>
+                    <button class="btn-danger" onclick="clearAllTasks()">Clear All Tasks</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,17 @@
+{
+  "name": "task-mailer",
+  "version": "1.0.0",
+  "description": "Daily task entry and email reporting system with backend API",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build step required'",
+    "start": "vercel dev"
+  },
+  "dependencies": {
+    "@emailjs/browser": "^4.3.2"
+  },
+  "devDependencies": {
+    "vercel": "^34.0.0"
+  }
+}
+
