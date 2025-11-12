@@ -68,12 +68,23 @@ export default function EmailConfig({ tasks, onClose, onSuccess, onError }: Emai
             <tbody>
     `
 
-    tasks.forEach(task => {
-      const escapeHtml = (text: string) => {
-        const div = document.createElement('div')
-        div.textContent = text
-        return div.innerHTML
+    const escapeHtml = (text: string) => {
+      if (typeof window === 'undefined') {
+        // Server-side: simple escape
+        return String(text)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;')
       }
+      // Client-side: use DOM
+      const div = document.createElement('div')
+      div.textContent = text
+      return div.innerHTML
+    }
+
+    tasks.forEach(task => {
       html += `
         <tr>
           <td>${escapeHtml(task.task)}</td>

@@ -65,12 +65,6 @@ export default function TaskList({ tasks, loading, onTaskDeleted, onTasksCleared
     }
   }
 
-  const escapeHtml = (text: string) => {
-    const div = document.createElement('div')
-    div.textContent = text
-    return div.innerHTML
-  }
-
   if (loading) {
     return (
       <div className="task-list-box">
