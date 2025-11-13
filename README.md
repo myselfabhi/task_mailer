@@ -60,6 +60,3 @@ task_mailer/
 | `CRON_SECRET` | Secret key for cron job auth | No |
 
 
-## License
-
-MIT
