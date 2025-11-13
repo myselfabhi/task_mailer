@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { API_BASE_URL } from '../config/api'
 
 interface Task {
   id: string
@@ -21,7 +22,6 @@ interface TaskListProps {
 }
 
 export default function TaskList({ tasks, loading, onTaskDeleted, onTasksCleared, onShowEmailConfig }: TaskListProps) {
-  const API_BASE_URL = '/api/tasks'
 
   const deleteTask = async (id: string) => {
     if (confirm('Are you sure you want to delete this task?')) {

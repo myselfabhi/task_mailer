@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { API_BASE_URL } from '../config/api'
 
 interface TaskFormProps {
   onTaskAdded: () => void
@@ -16,8 +17,6 @@ export default function TaskForm({ onTaskAdded, onError }: TaskFormProps) {
     status: '',
     remarks: ''
   })
-
-  const API_BASE_URL = '/api/tasks'
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import TaskForm from './components/TaskForm'
 import TaskList from './components/TaskList'
 import EmailConfig from './components/EmailConfig'
+import { API_BASE_URL } from './config/api'
 
 interface Task {
   id: string
@@ -20,8 +21,6 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [showEmailConfig, setShowEmailConfig] = useState(false)
   const [alert, setAlert] = useState<{ message: string; type: string } | null>(null)
-
-  const API_BASE_URL = '/api/tasks'
 
   useEffect(() => {
     loadTasks()

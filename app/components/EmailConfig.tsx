@@ -24,12 +24,17 @@ export default function EmailConfig({ tasks, onClose, onSuccess, onError }: Emai
   const formData = {
     recipientEmail: 'suneel.rajpoot@npstx.com',
     senderEmail: 'abhinav.verma@npstx.com',
-    senderName: 'abhinav',
-    emailjsServiceId: 'service_dmu7wsp',
-    emailjsTemplateId: 'template_jkplftf',
-    emailjsPublicKey: 'v0sBqDfGCut4AVokn'
+    senderName: 'abhinav'
   }
   const [isSending, setIsSending] = useState(false)
+  
+  // Determine API URL based on deployment
+  const getEmailApiUrl = () => {
+    if (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')) {
+      return 'https://task-mailer-1.onrender.com/api/email';
+    }
+    return '/api/email';
+  }
 
   // Close modal if no tasks
   useEffect(() => {
@@ -114,33 +119,34 @@ export default function EmailConfig({ tasks, onClose, onSuccess, onError }: Emai
   const handleConfirmSend = async () => {
     setIsSending(true)
     try {
-      // Dynamically import EmailJS only on client side
-      const emailjs = (await import('@emailjs/browser')).default;
-      
-      emailjs.init(formData.emailjsPublicKey)
       const emailContent = generateEmailContent()
+      const emailApiUrl = getEmailApiUrl()
 
-      const templateParams = {
-        to_email: formData.recipientEmail,
-        from_name: formData.senderName,
-        from_email: formData.senderEmail,
-        subject: `Daily Task Report - ${new Date().toLocaleDateString()}`,
-        message: emailContent,
-        html_content: emailContent,
-        htmlContent: emailContent
+      const response = await fetch(emailApiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to_email: formData.recipientEmail,
+          from_email: formData.senderEmail,
+          from_name: formData.senderName,
+          subject: `Daily Task Report - ${new Date().toLocaleDateString()}`,
+          html_content: emailContent,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to send email')
       }
-
-      await emailjs.send(
-        formData.emailjsServiceId,
-        formData.emailjsTemplateId,
-        templateParams
-      )
 
       onSuccess()
     } catch (error: any) {
       console.error('Email sending error:', error)
       setIsSending(false)
-      onError(`Failed to send email: ${error.text || error.message || 'Unknown error'}`)
+      onError(`Failed to send email: ${error.message || 'Unknown error'}`)
     }
   }
 
