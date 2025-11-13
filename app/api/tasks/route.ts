@@ -4,11 +4,12 @@ import { addTask, deleteTask, clearTasks, getTasks } from './storage';
 // Force dynamic rendering for API routes
 export const dynamic = 'force-dynamic';
 
-// CORS headers for cross-origin requests
+// CORS headers for cross-origin requests - comprehensive for cross-origin requests
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+  'Access-Control-Max-Age': '86400', // 24 hours
 };
 
 export async function OPTIONS() {

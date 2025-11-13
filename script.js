@@ -294,7 +294,6 @@ async function sendEmail(event) {
         );
         
         showAlert('Email sent successfully!', 'success');
-        // Reset form but preserve default values
         document.getElementById('recipientEmail').value = 'suneel.rajpoot@npstx.com';
         document.getElementById('senderEmail').value = 'abhinav.verma@npstx.com';
         document.getElementById('senderName').value = 'abhinav';

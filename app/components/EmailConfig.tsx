@@ -136,9 +136,22 @@ export default function EmailConfig({ tasks, onClose, onSuccess, onError }: Emai
         }),
       })
 
+      // Check if response is ok before parsing JSON
+      if (!response.ok) {
+        let errorMessage = `HTTP error! status: ${response.status}`
+        try {
+          const errorData = await response.json()
+          errorMessage = errorData.message || errorMessage
+        } catch {
+          // If JSON parsing fails, use the status text
+          errorMessage = response.statusText || errorMessage
+        }
+        throw new Error(errorMessage)
+      }
+
       const data = await response.json()
 
-      if (!response.ok || !data.success) {
+      if (!data.success) {
         throw new Error(data.message || 'Failed to send email')
       }
 
@@ -146,7 +159,13 @@ export default function EmailConfig({ tasks, onClose, onSuccess, onError }: Emai
     } catch (error: any) {
       console.error('Email sending error:', error)
       setIsSending(false)
-      onError(`Failed to send email: ${error.message || 'Unknown error'}`)
+      // Check if it's a CORS or network error
+      const errorMessage = error.message || 'Unknown error'
+      if (errorMessage.includes('CORS') || errorMessage.includes('Failed to fetch') || errorMessage.includes('NetworkError')) {
+        onError(`Network/CORS error: Please check if the backend is running and CORS is configured correctly. ${errorMessage}`)
+      } else {
+        onError(`Failed to send email: ${errorMessage}`)
+      }
     }
   }
 
